@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<!-- Slide 1/4 -->
+					<section>
+						ReactJS 1/4 - The basics
+					</section>
+					<section data-markdown>
+						#### What is React?
+
+						Built by Facebook as a result of their tiredness with framework wars and inefficiencies
+
+						They started to build something that they wanted to be easy to maintain
+						regardless of the codebase size and the team size.
+
+						Let's have a quick look at their GitHub: [React@GitHub](https://github.com/facebook/react)
+						And Google Trends: [Compare framework popularity](https://trends.google.com/trends/explore?q=EmberJS,%2Fm%2F0j45p7w,%2Fm%2F012l1vxv,AureliaJS%20%2B%20aurelia)
+					</section>
+					<section data-markdown>
+						It is mostly designed to be:
+						- Very fast, even with large amount of components on the screen
+						- Embracing the component paradigm as much as possible and increasing atomicity of components
+						- Concise and readable (Having everything in one file, JS, HTML and Styling)
+						- Highly testable
+						- Highly portable (ReactNative and Server-side rendering are good examples)
+					</section>
+					<section data-markdown>
+						#### Is it that fast?
+
+						React was the first real framework to use a technic called "Virtual DOM".
+						Virtual DOM is a technic that allows the page to render the visual layers and
+						modify them in an "in-memory" version of the DOM, swapping the real and virtual
+						DOM pieces that were modified once finished.
+						DOM being a very time-consuming process, enabling this allows for
+						"much" faster renderings because it avoids all the reflows.
+					</section>
+					<section data-markdown>
+						#### What it is not?
+
+						React is "not" a full-fledged framework. Many features aren't available in the
+						core library.
+					</section>
+					<section data-markdown>
+						#### The ecosystem
+
+						One of the main advantage of React is its ecosystem. It is massive and extremist.
+
+						Many many awesome features and libraries have been built around React. For example:
+						- Flux; A data-flow library that allows building fluid UI with ease
+						- immutable.js; An "immutable" data library to increase predictability to your states
+						- Flow; A static type checker for JavaScript
+						- ReactNative; Build mobile applications directly in ReactJS
+						- MANY more.
+					</section>
+					<section data-markdown>
+						#### The competition
+
+						As any JS framework the competition is really vast. Angular2, VueJS, AureliaJS,
+						EmberJS, and about 2 or 3 dozen others...
+					</section>
+					<!-- <section data-markdown>
+						#### Is it the best framework?
+
+						Thanks for asking. Any JS-war extremist will fight to have others admit their
+						framework is the best. But is it really? What is "best", is "best" the same to
+						everyone?
+
+						Answer's no. Of course. Every framework has its own strengths and weaknesses.
+					</section> -->
+					<section data-markdown>
+						#### Alright, time to see some JavaScript!
+					</section>
+				</section>
+				<section>
+					<!-- Slide 2/3-->
+					<section>
+						ReactJS 2/4 - A first taste
+					</section>
+					<section data-markdown>
+						First let's look at what is life "without" React:
+
+						[Random CodePen](https://codepen.io/dimsemenov/pen/hutrb)
+					</section>
+					<section>
+						Here's what life looks "with" React:
+					</section>
+					<section data-markdown>
+						The smallest component you can do:
+						```
+							var Hello = React.createClass({
+								render: function() {
+									return &lt;div>Hello guys&lt;/div>;
+								}
+							});
+						```
+						Render it with:
+						```
+							React.render(&lt;Hello />, document.body);
+						```
+
+						[Live example](http://jsbin.com/veluka/1/edit?html,js,output)
+					</section>
+					<section data-markdown>
+						Adding a prop (immutable):
+						```
+							var Hello = React.createClass({
+								render: function() {
+									return &lt;div>Hello {this.props.name}&lt;/div>;
+								}
+							});
+						```
+						Render:
+						```
+							React.render(&lt;Hello name="Boris" />, document.body);
+						```
+					</section>
+					<section data-markdown>
+						Adding state:
+						```
+							var Hello = React.createClass({
+								getInitialState: function() {
+									return { activated: false };
+								},
+								render: function() {
+									var divClasses = classNames({
+										'activated': this.state.activated
+									});
+									return &lt;div className={divClasses}>
+										Hello {this.props.name}
+									&lt;/div>;
+								}
+							});
+						```
+						Render:
+						```
+							React.render(&lt;Hello name="Boris" />, document.body);
+						```
+					</section>
+					<section data-markdown>
+						Adding events:
+						```
+							var Hello = React.createClass({
+								getInitialState: function() {
+									return { activated: false };
+								},
+								render: function() {
+									var divClasses = classNames({
+										'activated': this.state.activated
+									});
+									return &lt;div onClick={this.activate}
+										className={divClasses}>
+										Hello {this.props.name}
+									&lt;/div>;
+								},
+								activate: function() {
+									this.setState({ activated: true });
+								}
+							});
+						```
+						[Live example](http://jsbin.com/veluka/7/edit?html,js,output)
+					</section>
+					<section data-markdown>
+						### Combining components
+					</section>
+					<section data-markdown>
+						#### List Item pattern
+
+						First component:
+						```
+							var PostListItem = React.createClass({
+								render: function() {
+								return &lt;div>
+									&lt;h3>{this.props.post.title}&lt;/h3>
+									&lt;p>{this.props.post.content}&lt;/p>
+								&lt;/div>
+							}
+						```
+					</section>
+					<section data-markdown>
+						Second component:
+						```
+							var PostList = React.createClass({
+								render: function() {
+									return &lt;div> {
+										this.props.posts.map(function(post) {
+											return &lt;PostListItem post={post} />; })
+										}
+										&lt;/div>;
+								}
+							 });
+						```
+					</section>
+					<section data-markdown>
+						Building the list:
+						```
+							var posts = [
+								{ title: "The first post", content: "lorem ipsum" },
+								{ title: "The second post", content: "other lorem" }
+							];
+							React.render(&lt;PostList posts={posts} />, document.body);
+						```
+						[Live example](http://jsbin.com/veluka/8/edit?html,js,output)
+					</section>
+				</section>
+				<section>
+					<!-- Slide 3/4-->
+					<section>
+						React 3/4 - Use Cases
+					</section>
+					<section data-markdown>
+						It's very important to understand a few things before jumping in
+						the front-end world.
+
+						1. There is no such thing as "one fits all". The right tool for the right problem.
+						2. The good framework of today is the bad framework of tomorrow. Don't get romantic.
+						3. Always keep in mind what you are here for! Your mission is to "make a product that works so people can use it".
+					</section>
+					<section data-markdown>
+						Now with that said, let's look at a few "good" and "bad" reasons to use React.
+					</section>
+					<section data-markdown>
+						### Use cases
+
+						There are some very good use cases that are valid for React:
+						* I want to speed up the rendering of SOME components on my website
+						* I have "many" elements on my page and I want to speed that up
+						* I want to bring more dynamism to my website and I have "too much jQuery code"
+						* I need a SPA or a Progressive App
+						* I need an app on many platforms
+					</section>
+					<section data-markdown>
+						### Good reasons
+
+						* If your jQuery starts to give you a headache and you can't find out a piece of code within 5 seconds > Spaghetti effect
+						* If your need SPEED
+						* If your current project has a lot of legacy code (AngularJS?) and you want to slowly retire it
+						* If your project needs to be super smooth and you want either a SPA, a progressive web app, or just a great and fully controlled UX
+						* If your front-end team is or will be big and require heavy collaboration
+					</section>
+					<section data-markdown>
+						### BAD reasons
+
+						* If you use it just because a friend told you it was the best, you're probably doing it wrong (unless you're in the cases above)
+						* If you think it's an overkill and just need something simpler. (However in that case you can just use React where it makes sense, see above)
+						* If you just have some "tiny" level of interaction or need for dynamism, then just go jQuery... that's what it's for.
+					</section>
+				</section>
+				<section>
+					<!-- Slide 4/4-->
+					<section>
+						React 4/4 - ReactNative!<br/>
+						(cool stuff)
+					</section>
+					<section data-markdown>
+						First, installation of ReactNative is a big PITA. So you have to be patient.
+
+						Full info here: [Install all the requirements](https://facebook.github.io/react-native/docs/getting-started.html)
+					</section>
+					<section data-markdown>
+						### What is it?
+
+						ReactNative is a pretty cool initiative from FB (again) to build
+						native apps with speed (of development) in mind.
+					</section>
+					<section data-markdown>
+						Example:
+						```
+							import React, { Component } from 'react';
+							import { AppRegistry, Text } from 'react-native';
+
+							export default class HelloWorldApp extends Component {
+								render() {
+									return (
+										<Text>Hello world!</Text>
+									);
+								}
+							}
+						```
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
